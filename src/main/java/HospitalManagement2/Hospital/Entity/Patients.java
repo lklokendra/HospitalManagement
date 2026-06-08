@@ -1,9 +1,13 @@
 package HospitalManagement2.Hospital.Entity;
 
 
+import HospitalManagement2.Hospital.Entity.EnumType.BloodGroup;
 import HospitalManagement2.Hospital.Entity.EnumType.Gender;
 import jakarta.persistence.*;
-import org.antlr.v4.runtime.misc.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+import java.util.List;
 
 @Entity
 @Table(
@@ -17,10 +21,10 @@ import org.antlr.v4.runtime.misc.NotNull;
 public class Patients {
 
     @Id
-    @GeneratedValue()
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotBlank
     private String name;
 
     @Enumerated(EnumType.STRING)
@@ -33,4 +37,13 @@ public class Patients {
     private String email;
     private String disease;
     private String room;
+    @Enumerated(EnumType.STRING)
+    private BloodGroup bloodGroup;
+
+    @OneToOne
+    @JoinColumn(name="Patient_insurance_id") // default name insurance_id
+    private Insurance insurance;
+
+    @OneToMany(mappedBy = "patient" )
+    private List<Appointment> appointments; //as single patient can have many appointments
 }
