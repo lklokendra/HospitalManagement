@@ -6,7 +6,10 @@ import HospitalManagement2.Hospital.Repository.PatientsRepo;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -28,10 +31,17 @@ public class HospitalService {
        return modelMapper.map(patient,HospitalDto.class);
     }
 
-    public List<HospitalDto> FindAllPatients(){
-        List<Patients> patients=patientsRepo.findAll();
-        HospitalDto hospitalDto= modelMapper.map(patients,HospitalDto.class);
-        return List.of(hospitalDto);
+    public List<HospitalDto> FindAllPatients(Integer pageNumber, Integer pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<Patients> patientPage = patientsRepo.findAll(pageable);
+
+        List<Patients> patients = patientPage.getContent();
+
+        return patients.stream()
+                .map(patient -> modelMapper.map(patient, HospitalDto.class))
+                .toList();
     }
 
     public HospitalDto FindPatientById (Long id){

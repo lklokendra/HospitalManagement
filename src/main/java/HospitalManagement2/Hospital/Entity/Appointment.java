@@ -28,10 +28,12 @@ public class Appointment {
 
     //owning side has join column annotation
     @ManyToOne
+    @ToString.Exclude // so that it does not show patient table which will cause overflow
     @JoinColumn(name="patient_id",nullable=false) //patient is required to make appointment
     private Patients patient;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
     @JoinColumn(name="doctor_id",nullable=false) // doctor is required to make appointment
     private Doctor doctor;
 
